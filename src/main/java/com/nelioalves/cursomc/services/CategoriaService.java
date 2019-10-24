@@ -1,7 +1,6 @@
 package com.nelioalves.cursomc.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,11 +23,14 @@ public class CategoriaService {
 	
 	public Categoria find(Integer id) {
 		
-		Optional<Categoria> obj = repo.findById(id);
+		Categoria obj = repo.findOne(id);
 
-		return obj.orElseThrow( () -> new ObjectNotFoundException( "Objeto não encontrado! Id: " + id + 
-										", Tipo: " + Categoria.class.getName() )
-										);
+		if (obj == null) {
+			throw new ObjectNotFoundException("Objeto não encontrado! Id: " + id
+					+ ", Tipo: " + Categoria.class.getName());
+		}
+		
+		return obj;
 	}
 	
 	public Categoria insert(Categoria obj) {
@@ -44,14 +46,14 @@ public class CategoriaService {
 		find(id);
 		
 		try {
-			repo.deleteById(id);
+			repo.delete(id);
 		}catch(DataIntegrityViolationException e) {
 			throw new DataIntegrityException("Não é possível excluir uma Categoria que possui produtos.");
 		}
 	}
 	
 	public Page<Categoria> findPage(Integer page, Integer linesForPage, String orderBy, String direction){
-		PageRequest pageRequest = PageRequest.of(page, linesForPage, Direction.valueOf(direction) , orderBy);
+		PageRequest pageRequest = new PageRequest(page, linesForPage, Direction.valueOf(direction) , orderBy);
 		
 		return repo.findAll(pageRequest);
 	}
