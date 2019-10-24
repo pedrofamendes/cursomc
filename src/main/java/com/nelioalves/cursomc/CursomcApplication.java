@@ -33,7 +33,7 @@ import com.nelioalves.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner{
-
+	//teste
 	@Autowired
 	CategoriaRepository categoriaRepository;
 	@Autowired
